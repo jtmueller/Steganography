@@ -35,21 +35,13 @@ public partial class Form1 : Form
             image?.Dispose();
             if (Path.GetExtension(loadDialog.FileName) is ".png" or ".bmp" or ".jpg")
             {
-                try
-                {
-                    image = Image.FromFile(loadDialog.FileName);
-                    imageBox.Image = image;
-                    OutputConsole.Write($"Image loaded \nTotal pixels = {image.Width * image.Height}");
-                    OutputConsole.Write($"Maximum file size for this image = {FileSizeFormatProvider.GetFileSize((image.Width * image.Height) - 2)} - (file size digits + file name character count) bytes");
-                    currentMode = Mode.Image;
-                    audio = null;
-                    audioLabel.Visible = false;
-                }
-                catch
-                {
-                    image = null;
-                    imageBox.Image = null;
-                }
+                image = Image.FromFile(loadDialog.FileName);
+                imageBox.Image = image;
+                OutputConsole.Write($"Image loaded \nTotal pixels = {image.Width * image.Height}");
+                OutputConsole.Write($"Maximum file size for this image = {FileSizeFormatProvider.GetFileSize((image.Width * image.Height) - 2)} - (file size digits + file name character count) bytes");
+                currentMode = Mode.Image;
+                audio = null;
+                audioLabel.Visible = false;
             }
         }
     }
@@ -251,8 +243,7 @@ public partial class Form1 : Form
     private void Random_CheckedChanged(object sender, EventArgs e)
     {
         if (random.Checked)
-            OutputConsole.Write("Using random steganography algorithm (Requires prime number generation, slow for huge images/wav files, once the generator has reached the needed number it can process files quickly)");
-        //OutputConsole.Write("Using random steganography algorithm (Not recommended for huge files or text near 60% image pixels or more than 10% of available bytes in wav files)");
+            OutputConsole.Write("Using random steganography algorithm");
     }
 
     private void Linear_CheckedChanged(object sender, EventArgs e)

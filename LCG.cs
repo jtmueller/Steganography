@@ -1,26 +1,26 @@
-﻿using System.Numerics;
-
-namespace Steganography
+﻿namespace Steganography
 {
     public class LCG
     {
-        private readonly BigInteger m;
-        private BigInteger a;
-        private BigInteger c;
-        private readonly BigInteger x0;
+        private readonly uint m;
+        private uint a;
+        private uint c;
+        private readonly uint x0;
         private int index = 0;
         private readonly int seed = 0;
 
-        public List<BigInteger> X { get; private set; } = new List<BigInteger>();
+        public List<uint> X { get; private set; } = new List<uint>();
 
-        public LCG(BigInteger m, BigInteger x0)
+        public LCG(uint m, uint x0)
         {
             this.m = m;
             this.x0 = x0 % m;
             Initialize();
         }
 
-        public LCG(BigInteger m, BigInteger x0, int seed)
+        public LCG(int m, int x0) : this((uint)m, (uint)x0) { }
+
+        public LCG(uint m, uint x0, int seed)
         {
             this.m = m;
             this.x0 = x0 % m;
@@ -28,13 +28,13 @@ namespace Steganography
             Initialize();
         }
 
+        public LCG(int m, int x0, int seed) : this((uint)m, (uint)x0, seed) { }
+
         private void Initialize()
         {
             X.Clear();
-            var p = Primes();
-            var f = Factors(p);
-            c = CalcC(p, f);
-            a = f.Aggregate((x, y) => x * y);
+            c = CalcC(Primes(), out var factors);
+            a = factors.Aggregate((x, y) => x * y);
             if (m % 4 == 0)
             {
                 if (a % 4 == 0)
@@ -53,7 +53,7 @@ namespace Steganography
 
             index = 0;
             X.Add(x0);
-            for (BigInteger i = 1; i < m; i++)
+            for (uint i = 1; i < m; i++)
             {
                 X.Add(((a * X[(int)i - 1]) + c) % m);
             }
@@ -61,9 +61,9 @@ namespace Steganography
 
         public void SetIndex(int i) => index = i;
 
-        public BigInteger Get(int i) => X[i];
+        public uint Get(int i) => X[i];
 
-        public BigInteger Next()
+        public uint Next()
         {
             var r = X[index];
             index++;
@@ -77,52 +77,39 @@ namespace Steganography
         public List<double> GetList()
         {
             var list = new List<double>();
-            for (BigInteger i = 0; i < m; i++)
+            for (uint i = 0; i < m; i++)
             {
-                list.Add((double)X[(int)i]);
+                list.Add(X[(int)i]);
             }
             return list;
         }
 
-        private BigInteger CalcC(List<BigInteger> prime, List<BigInteger> factor)
+        private uint CalcC(IEnumerable<uint> primes, out List<uint> factors)
         {
+            var random = new Random(seed);
 
-            var l = new List<BigInteger>();
+            var fs = new List<uint>();
 
-            l.AddRange(prime);
-            for (int i = 0; i < factor.Count; i++)
-            {
-                l.Remove(factor[i]);
-            }
-
-            if (l.Count > 0)
-            {
-                return l[new Random(seed).Next(0, l.Count)];
-            }
-
-            return 1;
-        }
-
-        private List<BigInteger> Factors(List<BigInteger> prime)
-        {
-            var f = new List<BigInteger>();
-            foreach (var p in prime)
-            {
-                if (m % p == 0)
+            var result = primes
+                .Where(p =>
                 {
-                    f.Add(p);
-                }
-            }
-            return f;
+                    if (m % p == 0)
+                    {
+                        fs.Add(p);
+                        return false;
+                    }
+                    return true;
+                })
+                .RandomOrDefault(random, 1u);
+
+            factors = fs;
+            return result;
         }
 
-
-        private List<BigInteger> Primes()
+        private IEnumerable<uint> Primes()
         {
-            var p = Prime.GetPrimes(m);
-            p.Add(1); //Add 1, needed if m == prime
-
-            return p;
+            //Add 1, needed if m == prime
+            return Sieve32.Primes(m).Append(1u);
         }
     }
 }

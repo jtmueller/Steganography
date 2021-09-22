@@ -5,20 +5,20 @@ using System.Text;
 
 public static class Prime
 {
-    private static List<BigInteger> primeList = new();
-    private static BigInteger index = 0;
+    private static List<uint> primeList = new();
+    private static uint index = 0;
     private static Thread? thread;
     private static Thread? loadThread;
     private static readonly string file = "primes.bin";
     private static StringBuilder sbuilder = new();
     private static int intent = 0;
     private static readonly int maxIntent = 300;
-    private static BigInteger max = 1000000;
+    private static uint max = 1000000;
     private static readonly CancellationTokenSource cts = new();
 
     public static void Initialize()
     {
-        primeList = new List<BigInteger>();
+        primeList = new List<uint>();
         
         loadThread = new Thread(static () => InitializeUsingFiles(cts.Token));
         loadThread.Start();
@@ -45,7 +45,7 @@ public static class Prime
             foreach (string s in File.ReadLines(file))
             {
                 ct.ThrowIfCancellationRequested();
-                if (BigInteger.TryParse(s.TrimEnd('\r', '\n'), out var b))
+                if (uint.TryParse(s.TrimEnd('\r', '\n'), out var b))
                 {
                     primeList.Add(b);
                 }
@@ -73,7 +73,7 @@ public static class Prime
             {
                 e = false;
             }
-            for (BigInteger n = 5; n * n <= i; n += 6)
+            for (uint n = 5; n * n <= i; n += 6)
             {
                 if (i % n == 0 || i % (n + 2) == 0)
                 {
@@ -106,7 +106,7 @@ public static class Prime
         }
     }
 
-    public static List<BigInteger> GetPrimes(BigInteger m)
+    public static List<uint> GetPrimes(uint m)
     {
         if (max < m)
         {
@@ -117,7 +117,7 @@ public static class Prime
             OutputConsole.Write($"Current index:{index}, needed:{m}");
             Thread.Sleep(1000);
         }
-        var list = new List<BigInteger>();
+        var list = new List<uint>();
         lock (primeList)
         {
             list = primeList.Where(n => n <= m).ToList();
@@ -126,7 +126,7 @@ public static class Prime
         return list;
     }
 
-    public static void IncreaseMax(BigInteger nmax)
+    public static void IncreaseMax(uint nmax)
     {
         max = nmax;
         if (thread != null)
