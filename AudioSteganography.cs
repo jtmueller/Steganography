@@ -5,10 +5,9 @@ public static class AudioSteganography
     public static byte[] EncryptText(byte[] wav, string text)
     {
         var audio = new WavAudio(wav);
-        string pass = string.Format(audio.BitsPerSample.ToString());
-        var encrypt = new AESEncrypt();
+        string pass = audio.BitsPerSample.ToString();
         string encrypted = AESEncrypt.EncryptString(text, pass);
-        OutputConsole.Write(string.Format("Text encrypted \n{0}", encrypted));
+        OutputConsole.Write($"Text encrypted \n{encrypted}");
         if (encrypted.Length <= Math.Floor((double)(audio.TotalSamples / 8)))
         {
             var generator = new SeedURNG(audio.TotalSamples, audio.TotalSamples);
@@ -36,7 +35,7 @@ public static class AudioSteganography
                 audio.Samples[sample] = sampleValue;
             }
             audio.Save();
-            OutputConsole.Write(string.Format("Text encrypted... used {0} samples", encrypted.Length * 8));
+            OutputConsole.Write($"Text encrypted... used {encrypted.Length * 8} samples");
             OutputConsole.Write("Saving wav file");
             return audio.data;
         }
@@ -50,10 +49,9 @@ public static class AudioSteganography
     public static byte[] EncryptTextLinear(byte[] wav, string text)
     {
         var audio = new WavAudio(wav);
-        string pass = string.Format(audio.BitsPerSample.ToString());
-        var encrypt = new AESEncrypt();
+        string pass = audio.BitsPerSample.ToString();
         string encrypted = AESEncrypt.EncryptString(text, pass);
-        OutputConsole.Write(string.Format("Text encrypted \n{0}", encrypted));
+        OutputConsole.Write($"Text encrypted \n{encrypted}");
         if (encrypted.Length <= Math.Floor((double)(audio.TotalSamples / 8)))
         {
             uint n = 0;
@@ -83,7 +81,7 @@ public static class AudioSteganography
                 n++;
             }
             audio.Save();
-            OutputConsole.Write(string.Format("Text encrypted... used {0} samples", encrypted.Length * 8));
+            OutputConsole.Write($"Text encrypted... used {encrypted.Length * 8} samples");
             OutputConsole.Write("Saving wav file");
             return audio.data;
         }
@@ -99,8 +97,7 @@ public static class AudioSteganography
         var audio = new WavAudio(wav);
         string text = string.Empty;
         var generator = new SeedURNG(audio.TotalSamples, audio.TotalSamples);
-        string pass = string.Format(audio.BitsPerSample.ToString());
-        var encrypt = new AESEncrypt();
+        string pass = audio.BitsPerSample.ToString();
         OutputConsole.Write("Processing wav file...");
         uint value;
         do
@@ -133,8 +130,7 @@ public static class AudioSteganography
         var audio = new WavAudio(wav);
         string text = string.Empty;
         uint n = 0;
-        string pass = string.Format(audio.BitsPerSample.ToString());
-        var encrypt = new AESEncrypt();
+        string pass = audio.BitsPerSample.ToString();
         OutputConsole.Write("Processing wav file...");
         uint value;
         do
@@ -168,7 +164,7 @@ public static class AudioSteganography
         var audio = new WavAudio(wav);
         int extraBytes = 2 + filename.Length + file.Length.ToString().Length;
         var f = new HiddenFile(file, filename);
-        OutputConsole.Write(string.Format("File size: {0} bytes", file.Length));
+        OutputConsole.Write($"File size: {file.Length:n0} bytes");
         f.CipherFile((int)audio.TotalSamples);
         if (file.Length <= Math.Floor((double)(audio.TotalSamples / 8)) - extraBytes)
         {
@@ -242,7 +238,7 @@ public static class AudioSteganography
             return Array.Empty<byte>();
         }
         OutputConsole.Write("Finished embedding file");
-        OutputConsole.Write(string.Format("Used {0} samples", (file.Length + extraBytes) * 8));
+        OutputConsole.Write($"Used {(file.Length + extraBytes) * 8} samples");
         audio.Save();
         return audio.data;
     }
@@ -252,7 +248,7 @@ public static class AudioSteganography
         var audio = new WavAudio(wav);
         int extraBytes = 2 + filename.Length + file.Length.ToString().Length;
         var f = new HiddenFile(file, filename);
-        OutputConsole.Write(string.Format("File size: {0} bytes", file.Length));
+        OutputConsole.Write($"File size: {file.Length:n0} bytes");
         f.CipherFile((int)audio.TotalSamples);
         if (file.Length <= Math.Floor((double)(audio.TotalSamples / 8)) - extraBytes)
         {
@@ -329,7 +325,7 @@ public static class AudioSteganography
             return Array.Empty<byte>();
         }
         OutputConsole.Write("Finished embedding file");
-        OutputConsole.Write(string.Format("Used {0} samples", (file.Length + extraBytes) * 8));
+        OutputConsole.Write($"Used {(file.Length + extraBytes) * 8} samples");
         audio.Save();
         return audio.data;
     }
@@ -339,7 +335,7 @@ public static class AudioSteganography
         var audio = new WavAudio(wav);
         int extraBytes = 2 + filename.Length + file.Length.ToString().Length;
         var f = new HiddenFile(file, filename);
-        OutputConsole.Write(string.Format("File size: {0} bytes", file.Length));
+        OutputConsole.Write($"File size: {file.Length:n0} bytes");
         f.CipherFile((int)audio.TotalSamples);
         if (file.Length <= Math.Floor((double)(audio.TotalSamples / 8)) - extraBytes)
         {
@@ -350,9 +346,10 @@ public static class AudioSteganography
             OutputConsole.Write("Writing metadata...");
             uint value;
             //Write file size
-            for (int i = 0; i < file.Length.ToString().Length; i++)
+            var lenStr = file.Length.ToString();
+            for (int i = 0; i < lenStr.Length; i++)
             {
-                value = file.Length.ToString()[i];
+                value = lenStr[i];
                 for (int x = 0; x < 8; x++)
                 {
                     uint sample = generator.NextN;
@@ -413,7 +410,7 @@ public static class AudioSteganography
             return Array.Empty<byte>();
         }
         OutputConsole.Write("Finished embedding file");
-        OutputConsole.Write(string.Format("Used {0} samples", (file.Length + extraBytes) * 8));
+        OutputConsole.Write($"Used {(file.Length + extraBytes) * 8} samples");
         audio.Save();
         return audio.data;
     }
@@ -442,7 +439,7 @@ public static class AudioSteganography
                     text += Convert.ToChar(value);
             } while (value != '#' && char.IsNumber((char)value));
             int filesize = int.Parse(text);
-            OutputConsole.Write(string.Format("Extracted file size: {0} bytes", filesize));
+            OutputConsole.Write($"Extracted file size: {filesize:n0} bytes");
             text = string.Empty;
             do
             {
@@ -457,7 +454,7 @@ public static class AudioSteganography
                     text += Convert.ToChar(value);
             } while (value != 0);
             string filename = text;
-            OutputConsole.Write(string.Format("Extracted file name: {0}", filename));
+            OutputConsole.Write($"Extracted file name: {filename}");
             byte[] file = new byte[filesize];
             for (int i = 0; i < filesize; i++)
             {
@@ -470,7 +467,7 @@ public static class AudioSteganography
                 }
                 file[i] = (byte)value;
             }
-            OutputConsole.Write(string.Format("Extracted file content"));
+            OutputConsole.Write("Extracted file content");
             var f = new HiddenFile(file, filename);
             OutputConsole.Write("Ciphering file...");
             f.CipherFile((int)audio.TotalSamples);
@@ -506,7 +503,7 @@ public static class AudioSteganography
                     text += Convert.ToChar(value);
             } while (value != '#' && char.IsNumber((char)value));
             int filesize = int.Parse(text);
-            OutputConsole.Write(string.Format("Extracted file size: {0} bytes", filesize));
+            OutputConsole.Write($"Extracted file size: {filesize:n0} bytes");
             text = string.Empty;
             do
             {
@@ -522,7 +519,7 @@ public static class AudioSteganography
                     text += Convert.ToChar(value);
             } while (value != 0);
             string filename = text;
-            OutputConsole.Write(string.Format("Extracted file name: {0}", filename));
+            OutputConsole.Write($"Extracted file name: {filename}");
             byte[] file = new byte[filesize];
             for (int i = 0; i < filesize; i++)
             {
@@ -536,7 +533,7 @@ public static class AudioSteganography
                 }
                 file[i] = (byte)value;
             }
-            OutputConsole.Write(string.Format("Extracted file content"));
+            OutputConsole.Write("Extracted file content");
             var f = new HiddenFile(file, filename);
             OutputConsole.Write("Ciphering file...");
             f.CipherFile((int)audio.TotalSamples);
@@ -572,7 +569,7 @@ public static class AudioSteganography
                     text += Convert.ToChar(value);
             } while (value != '#' && char.IsNumber((char)value));
             int filesize = int.Parse(text);
-            OutputConsole.Write(string.Format("Extracted file size: {0} bytes", filesize));
+            OutputConsole.Write($"Extracted file size: {filesize:n0} bytes");
             text = string.Empty;
             do
             {
@@ -587,7 +584,7 @@ public static class AudioSteganography
                     text += Convert.ToChar(value);
             } while (value != 0);
             string filename = text;
-            OutputConsole.Write(string.Format("Extracted file name: {0}", filename));
+            OutputConsole.Write($"Extracted file name: {filename}");
             byte[] file = new byte[filesize];
             for (int i = 0; i < filesize; i++)
             {
@@ -600,7 +597,7 @@ public static class AudioSteganography
                 }
                 file[i] = (byte)value;
             }
-            OutputConsole.Write(string.Format("Extracted file content"));
+            OutputConsole.Write("Extracted file content");
             var f = new HiddenFile(file, filename);
             OutputConsole.Write("Ciphering file...");
             f.CipherFile((int)audio.TotalSamples);

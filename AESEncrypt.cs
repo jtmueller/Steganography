@@ -3,7 +3,7 @@
 using System.Security.Cryptography;
 using System.Text;
 
-public class AESEncrypt
+public static class AESEncrypt
 {
     private static Aes CreateAES(string key)
     {

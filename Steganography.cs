@@ -31,10 +31,9 @@ public static class Steganography
     private static void EncodeMessage(ref Bitmap img, string text)
     {
         int maxLinear = img.Width * img.Height;
-        var generator = new SeedRNG((maxLinear + img.Width).GetHashCode(), maxLinear);
+        var generator = new SeedRNG(HashCode.Combine(maxLinear + img.Width), maxLinear);
         OutputConsole.Write("Seed generated");
         string pass = string.Format("{0}x{1}={2}", img.Width, img.Height, maxLinear);
-        var encrypt = new AESEncrypt();
         string encrypted = AESEncrypt.EncryptString(text, pass);
         OutputConsole.Write(string.Format("Text encrypted \n{0}", encrypted));
         OutputConsole.Write("Processing image...");
@@ -65,7 +64,6 @@ public static class Steganography
     {
         int maxLinear = img.Width * img.Height;
         string pass = string.Format("{0}x{1}={2}", img.Width, img.Height, maxLinear);
-        var encrypt = new AESEncrypt();
         int c = 0;
         string encrypted = AESEncrypt.EncryptString(text, pass);
         OutputConsole.Write(string.Format("Text encrypted \n{0}", encrypted));
@@ -98,10 +96,9 @@ public static class Steganography
     {
         var img = new Bitmap(image);
         int maxLinear = image.Width * image.Height;
-        var generator = new SeedRNG((maxLinear + image.Width).GetHashCode(), maxLinear);
+        var generator = new SeedRNG(HashCode.Combine(maxLinear + image.Width), maxLinear);
         OutputConsole.Write("Seed generated");
         string pass = string.Format("{0}x{1}={2}", image.Width, image.Height, maxLinear);
-        var encrypt = new AESEncrypt();
         string text = string.Empty;
         OutputConsole.Write("Processing image...");
         int value;
@@ -132,8 +129,7 @@ public static class Steganography
     {
         var img = new Bitmap(image);
         int maxLinear = image.Width * image.Height;
-        string pass = string.Format("{0}x{1}={2}", image.Width, image.Height, maxLinear);
-        var encrypt = new AESEncrypt();
+        string pass = $"{image.Width}x{image.Height}={maxLinear}";
         string text = string.Empty;
         int i = 0;
         OutputConsole.Write("Processing image...");
@@ -149,7 +145,7 @@ public static class Steganography
         } while (value != 255);
         try
         {
-            OutputConsole.Write(string.Format("String found: \n{0}", text));
+            OutputConsole.Write($"String found: \n{text}");
             OutputConsole.Write("Decrypting text...");
             return AESEncrypt.DecryptString(text, pass);
         }
@@ -186,12 +182,12 @@ public static class Steganography
     {
         //var backup = img.Clone() as Bitmap;
         int maxLinear = img.Width * img.Height;
-        OutputConsole.Write(string.Format("File size: {0}", FileSizeFormatProvider.GetFileSize(file.Length)));
-        var generator = new SeedRNG((maxLinear + img.Width).GetHashCode(), maxLinear);
+        OutputConsole.Write($"File size: {FileSizeFormatProvider.GetFileSize(file.Length)}");
+        var generator = new SeedRNG(HashCode.Combine(maxLinear + img.Width), maxLinear);
         OutputConsole.Write("Seed generated");
         int extraBytes = 2 + filename.Length + file.Length.ToString().Length;
         var f = new HiddenFile(file, filename);
-        f.CipherFile((maxLinear + img.Width).GetHashCode());
+        f.CipherFile(HashCode.Combine(maxLinear + img.Width));
         OutputConsole.Write("Ciphering file...");
         if (file.Length < maxLinear - extraBytes)
         {
@@ -250,7 +246,7 @@ public static class Steganography
         OutputConsole.Write(string.Format("File size: {0}", FileSizeFormatProvider.GetFileSize(file.Length)));
         int extraBytes = 2 + filename.Length + file.Length.ToString().Length;
         var f = new HiddenFile(file, filename);
-        f.CipherFile((maxLinear + img.Width).GetHashCode());
+        f.CipherFile(HashCode.Combine(maxLinear + img.Width));
         OutputConsole.Write("Ciphering file...");
         if (file.Length < maxLinear - extraBytes)
         {
@@ -310,11 +306,11 @@ public static class Steganography
         //var backup = img.Clone() as Bitmap;
         int maxLinear = img.Width * img.Height;
         OutputConsole.Write(string.Format("File size: {0}", FileSizeFormatProvider.GetFileSize(file.Length)));
-        var generator = new SeedRNG((maxLinear + img.Width).GetHashCode(), maxLinear, true);
+        var generator = new SeedRNG(HashCode.Combine(maxLinear + img.Width), maxLinear, true);
         OutputConsole.Write("Seed generated");
         int extraBytes = 2 + filename.Length + file.Length.ToString().Length;
         var f = new HiddenFile(file, filename);
-        f.CipherFile((maxLinear + img.Width).GetHashCode());
+        f.CipherFile(HashCode.Combine(maxLinear + img.Width));
         OutputConsole.Write("Ciphering file...");
         if (file.Length < maxLinear - extraBytes)
         {
@@ -371,7 +367,7 @@ public static class Steganography
         {
             var img = new Bitmap(image);
             int maxLinear = image.Width * image.Height;
-            var generator = new SeedRNG((maxLinear + image.Width).GetHashCode(), maxLinear);
+            var generator = new SeedRNG(HashCode.Combine(maxLinear + image.Width), maxLinear);
             OutputConsole.Write("Seed generated");
             string text = string.Empty;
             int value = 0;
@@ -413,7 +409,7 @@ public static class Steganography
             }
             OutputConsole.Write(string.Format("Extracted file content"));
             var f = new HiddenFile(file, filename);
-            f.CipherFile((maxLinear + img.Width).GetHashCode());
+            f.CipherFile(HashCode.Combine(maxLinear + img.Width));
             OutputConsole.Write("Ciphering file...");
             return f;
         }
@@ -473,7 +469,7 @@ public static class Steganography
             }
             OutputConsole.Write(string.Format("Extracted file content"));
             var f = new HiddenFile(file, filename);
-            f.CipherFile((maxLinear + img.Width).GetHashCode());
+            f.CipherFile(HashCode.Combine(maxLinear + img.Width));
             OutputConsole.Write("Ciphering file...");
             return f;
         }
@@ -491,7 +487,7 @@ public static class Steganography
         {
             var img = new Bitmap(image);
             int maxLinear = image.Width * image.Height;
-            var generator = new SeedRNG((maxLinear + image.Width).GetHashCode(), maxLinear, true);
+            var generator = new SeedRNG(HashCode.Combine(maxLinear + image.Width), maxLinear, true);
             OutputConsole.Write("Seed generated");
             string text = string.Empty;
             int value = 0;
@@ -533,7 +529,7 @@ public static class Steganography
             }
             OutputConsole.Write(string.Format("Extracted file content"));
             var f = new HiddenFile(file, filename);
-            f.CipherFile((maxLinear + img.Width).GetHashCode());
+            f.CipherFile(HashCode.Combine(maxLinear + img.Width));
             OutputConsole.Write("Ciphering file...");
             return f;
         }

@@ -85,7 +85,7 @@ public static class Prime
                 lock (primeList)
                 {
                     primeList.Add(i);
-                    sbuilder.Append(i.ToString() + "\r\n");
+                    sbuilder.AppendLine(i.ToString());
                     intent++;
                     if (intent > maxIntent)
                     {
@@ -94,7 +94,6 @@ public static class Prime
                             File.AppendAllText(file, sbuilder.ToString());
                             intent = 0;
                             sbuilder.Clear();
-                            sbuilder = new StringBuilder();
                         }
                         catch (Exception ex)
                         {

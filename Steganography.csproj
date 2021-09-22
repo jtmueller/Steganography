@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
@@ -8,5 +8,9 @@
     <ImplicitUsings>true</ImplicitUsings>
     <Copyright>Ruben_DAL</Copyright>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove=".gitattributes" />
+  </ItemGroup>
 
 </Project>
