@@ -70,7 +70,7 @@
             this.loadImage.TabIndex = 1;
             this.loadImage.Text = "Load Image";
             this.loadImage.UseVisualStyleBackColor = true;
-            this.loadImage.Click += new System.EventHandler(this.loadImage_Click);
+            this.loadImage.Click += new System.EventHandler(this.LoadImage_Click);
             // 
             // label1
             // 
@@ -89,7 +89,7 @@
             this.encryptButton.TabIndex = 4;
             this.encryptButton.Text = "Encrypt String";
             this.encryptButton.UseVisualStyleBackColor = true;
-            this.encryptButton.Click += new System.EventHandler(this.encryptButton_Click);
+            this.encryptButton.Click += new System.EventHandler(this.EncryptButton_Click);
             // 
             // decryptButton
             // 
@@ -99,7 +99,7 @@
             this.decryptButton.TabIndex = 5;
             this.decryptButton.Text = "Decrypt String";
             this.decryptButton.UseVisualStyleBackColor = true;
-            this.decryptButton.Click += new System.EventHandler(this.decryptButton_Click);
+            this.decryptButton.Click += new System.EventHandler(this.DecryptButton_Click);
             // 
             // loadDialog
             // 
@@ -117,8 +117,8 @@
             this.console.Name = "console";
             this.console.Size = new System.Drawing.Size(286, 173);
             this.console.TabIndex = 6;
-            this.console.KeyDown += new System.Windows.Forms.KeyEventHandler(this.console_KeyDown);
-            this.console.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.console_MouseDoubleClick);
+            this.console.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Console_KeyDown);
+            this.console.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.Console_MouseDoubleClick);
             // 
             // loadFileDialog
             // 
@@ -133,7 +133,7 @@
             this.encryptFile.TabIndex = 8;
             this.encryptFile.Text = "Encrypt File";
             this.encryptFile.UseVisualStyleBackColor = true;
-            this.encryptFile.Click += new System.EventHandler(this.encryptFile_Click);
+            this.encryptFile.Click += new System.EventHandler(this.EncryptFile_Click);
             // 
             // decryptFile
             // 
@@ -143,7 +143,7 @@
             this.decryptFile.TabIndex = 9;
             this.decryptFile.Text = "Decrypt File";
             this.decryptFile.UseVisualStyleBackColor = true;
-            this.decryptFile.Click += new System.EventHandler(this.decryptFile_Click);
+            this.decryptFile.Click += new System.EventHandler(this.DecryptFile_Click);
             // 
             // random
             // 
@@ -154,7 +154,7 @@
             this.random.TabIndex = 10;
             this.random.Text = "Random";
             this.random.UseVisualStyleBackColor = true;
-            this.random.CheckedChanged += new System.EventHandler(this.random_CheckedChanged);
+            this.random.CheckedChanged += new System.EventHandler(this.Random_CheckedChanged);
             // 
             // linear
             // 
@@ -165,7 +165,7 @@
             this.linear.TabIndex = 11;
             this.linear.Text = "Linear";
             this.linear.UseVisualStyleBackColor = true;
-            this.linear.CheckedChanged += new System.EventHandler(this.linear_CheckedChanged);
+            this.linear.CheckedChanged += new System.EventHandler(this.Linear_CheckedChanged);
             // 
             // textBox
             // 
@@ -192,7 +192,7 @@
             this.loadWavFile.TabIndex = 14;
             this.loadWavFile.Text = "Load WAV File";
             this.loadWavFile.UseVisualStyleBackColor = true;
-            this.loadWavFile.Click += new System.EventHandler(this.loadWavFile_Click);
+            this.loadWavFile.Click += new System.EventHandler(this.LoadWavFile_Click);
             // 
             // loadWav
             // 
@@ -224,7 +224,7 @@
             this.randomM2.Text = "Random M2";
             this.randomM2.UseVisualStyleBackColor = true;
             this.randomM2.Visible = false;
-            this.randomM2.CheckedChanged += new System.EventHandler(this.randomM2_CheckedChanged);
+            this.randomM2.CheckedChanged += new System.EventHandler(this.RandomM2_CheckedChanged);
             // 
             // Form1
             // 

@@ -1,27 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿namespace Steganography;
 
-namespace Steganography
+public class HiddenFile
 {
-    public class HiddenFile
+    public string Filename { get; set; }
+    public byte[] File { get; set; }
+    public int Size { get; set; }
+
+    public HiddenFile(byte[] file, string filename)
     {
-        public string filename { get; set; }
-        public byte[] file { get; set; }
-        public int size { get; set; }
+        File = file;
+        Filename = filename;
+        Size = file.Length;
+    }
 
-        public HiddenFile(byte[] file, string filename)
-        {
-            this.file = file;
-            this.filename = filename;
-            this.size = file.Length;
-        }
-
-        public void cipherFile(int seed)
-        {
-            byte[] newFile = CipherFile.cipherFile(file, seed);
-            file = newFile;
-        }
+    public void CipherFile(int seed)
+    {
+        byte[] newFile = FileCipher.CipherFile(File, seed);
+        File = newFile;
     }
 }

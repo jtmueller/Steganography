@@ -1,87 +1,76 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿namespace Steganography;
 
-namespace Steganography
+public class FileSizeFormatProvider : IFormatProvider, ICustomFormatter
 {
-    public class FileSizeFormatProvider : IFormatProvider, ICustomFormatter
+    public static string GetFileSize(long bytes) => string.Format(new FileSizeFormatProvider(), "{0:fs}", bytes);
+
+    public object? GetFormat(Type? formatType)
     {
-        public static string GetFileSize(long bytes)
+        if (formatType == typeof(ICustomFormatter)) return this;
+        return null;
+    }
+
+    private const string FileSizeFormat = "fs";
+    private const decimal OneKiloByte = 1024M;
+    private const decimal OneMegaByte = OneKiloByte * 1024M;
+    private const decimal OneGigaByte = OneMegaByte * 1024M;
+
+    public string Format(string? format, object? arg, IFormatProvider? formatProvider)
+    {
+        if (format == null || !format.StartsWith(FileSizeFormat))
         {
-            return String.Format(new FileSizeFormatProvider(), "{0:fs}", bytes);
+            return DefaultFormat(format, arg, formatProvider);
         }
 
-        public object GetFormat(Type formatType)
+        if (arg is string)
         {
-            if (formatType == typeof(ICustomFormatter)) return this;
-            return null;
+            return DefaultFormat(format, arg, formatProvider);
         }
 
-        private const string fileSizeFormat = "fs";
-        private const Decimal OneKiloByte = 1024M;
-        private const Decimal OneMegaByte = OneKiloByte * 1024M;
-        private const Decimal OneGigaByte = OneMegaByte * 1024M;
+        decimal size;
 
-        public string Format(string format, object arg, IFormatProvider formatProvider)
+        try
         {
-            if (format == null || !format.StartsWith(fileSizeFormat))
-            {
-                return defaultFormat(format, arg, formatProvider);
-            }
-
-            if (arg is string)
-            {
-                return defaultFormat(format, arg, formatProvider);
-            }
-
-            Decimal size;
-
-            try
-            {
-                size = Convert.ToDecimal(arg);
-            }
-            catch (InvalidCastException)
-            {
-                return defaultFormat(format, arg, formatProvider);
-            }
-
-            string suffix;
-            if (size > OneGigaByte)
-            {
-                size /= OneGigaByte;
-                suffix = "GB";
-            }
-            else if (size > OneMegaByte)
-            {
-                size /= OneMegaByte;
-                suffix = "MB";
-            }
-            else if (size > OneKiloByte)
-            {
-                size /= OneKiloByte;
-                suffix = "KB";
-            }
-            else
-            {
-                suffix = "B";
-            }
-
-            string precision = format.Substring(2);
-            if (String.IsNullOrEmpty(precision)) precision = "2";
-            return String.Format("{0:N" + precision + "} {1}", size, suffix);
-
+            size = Convert.ToDecimal(arg);
+        }
+        catch (InvalidCastException)
+        {
+            return DefaultFormat(format, arg, formatProvider);
         }
 
-        private static string defaultFormat(string format, object arg, IFormatProvider formatProvider)
+        string suffix;
+        if (size > OneGigaByte)
         {
-            IFormattable formattableArg = arg as IFormattable;
-            if (formattableArg != null)
-            {
-                return formattableArg.ToString(format, formatProvider);
-            }
-            return arg.ToString();
+            size /= OneGigaByte;
+            suffix = "GB";
+        }
+        else if (size > OneMegaByte)
+        {
+            size /= OneMegaByte;
+            suffix = "MB";
+        }
+        else if (size > OneKiloByte)
+        {
+            size /= OneKiloByte;
+            suffix = "KB";
+        }
+        else
+        {
+            suffix = "B";
         }
 
+        string precision = format[2..];
+        if (string.IsNullOrEmpty(precision)) precision = "2";
+        return string.Format("{0:N" + precision + "} {1}", size, suffix);
+
+    }
+
+    private static string DefaultFormat(string? format, object? arg, IFormatProvider? formatProvider)
+    {
+        if (arg is IFormattable formattableArg)
+        {
+            return formattableArg.ToString(format, formatProvider);
+        }
+        return arg?.ToString() ?? string.Empty;
     }
 }
